@@ -32,6 +32,8 @@
 </template>
 
 <script>
+//导入请求
+import { login } from '../api/http'
 export default {
   data () {
     return {
@@ -58,7 +60,12 @@ export default {
         if (valid) {
           alert('submit')
           //发送请求，登入
-
+          login(this.ruleForm.username, this.ruleForm.password)
+            //当前函数的调用 会返回一个对象，可以使用链式语法
+            //链式写法原理：是因为返回的都是当前的对象
+            .then(res => {
+              console.log(res)
+            })
         } else {
           console.log('err submit')
           return false

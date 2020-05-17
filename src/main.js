@@ -8,11 +8,6 @@ import element from './element/index'
 //导入路由
 import VueRouter from 'vue-router'
 
-//导入axios
-import axios from './api/http'
-//给Vue的原型添加axios 让所有的vue可以访问axios
-Vue.prototype.$axios = axios
-
 //导入组件
 import Login from './components/login.vue'
 import Index from './components/index.vue'
