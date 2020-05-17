@@ -1,13 +1,17 @@
 import Vue from 'vue'
 import App from './App.vue'
 
-//导入基础样式
+//导入全局基础样式
 import css from './assets/css/base.less'
 //导入element-ui 
 import element from './element/index'
 //导入路由
 import VueRouter from 'vue-router'
 
+//导入axios
+import axios from './api/http'
+//给Vue的原型添加axios 让所有的vue可以访问axios
+Vue.prototype.$axios = axios
 
 //导入组件
 import Login from './components/login.vue'
