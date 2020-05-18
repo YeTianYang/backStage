@@ -34,6 +34,7 @@
 <script>
 //导入请求
 import { login } from '../api/http'
+// import { Message } from 'element-ui'
 export default {
   data () {
     return {
@@ -58,13 +59,22 @@ export default {
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit')
           //发送请求，登入
           login(this.ruleForm.username, this.ruleForm.password)
             //当前函数的调用 会返回一个对象，可以使用链式语法
             //链式写法原理：是因为返回的都是当前的对象
             .then(res => {
               console.log(res)
+              if (res.data.meta.status == 200) {
+                //登入成功
+                this.$message.success('登入成功')
+                //跳转之前保存token
+                window.localStorage.setItem('token', res.data.data.token)
+                //跳转到首页
+                this.$router.push({ path: 'index' })
+              } else {
+                this.$message.error(res.data.meta.msg)
+              }
             })
         } else {
           console.log('err submit')

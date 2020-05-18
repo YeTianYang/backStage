@@ -1,4 +1,7 @@
-import { Button, Form, FormItem, Input, Container, Aside, Main, Header } from 'element-ui'
+import { Button, Form, FormItem, Input, Container, Aside, Main, Header, Message } from 'element-ui'
+
+const message = Message
+
 
 export default {
   install (Vue) {
@@ -12,3 +15,4 @@ export default {
       Vue.use(Header)
   }
 }
+export { message }

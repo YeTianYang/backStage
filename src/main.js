@@ -7,16 +7,21 @@ import css from './assets/css/base.less'
 import element from './element/index'
 //导入路由
 import VueRouter from 'vue-router'
-
 //导入组件
 import Login from './components/login.vue'
 import Index from './components/index.vue'
+
+//导入message模块
+import { Message } from 'element-ui'
+Vue.prototype.$message = Message;
 
 Vue.use(css)
 //使用element-ui 
 Vue.use(element)
 //使用路由
 Vue.use(VueRouter)
+
+
 
 //准备规则
 const routes = [
