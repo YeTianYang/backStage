@@ -1,8 +1,5 @@
 import { Button, Form, FormItem, Input, Container, Aside, Main, Header, Message } from 'element-ui'
 
-const message = Message
-
-
 export default {
   install (Vue) {
     Vue.use(Button),
@@ -12,7 +9,7 @@ export default {
       Vue.use(Container),
       Vue.use(Aside),
       Vue.use(Main),
-      Vue.use(Header)
+      Vue.use(Header),
+      Vue.prototype.$message = Message
   }
 }
-export { message }

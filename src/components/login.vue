@@ -67,6 +67,7 @@ export default {
               console.log(res)
               if (res.data.meta.status == 200) {
                 //登入成功
+                // console.log(this)
                 this.$message.success('登入成功')
                 //跳转之前保存token
                 window.localStorage.setItem('token', res.data.data.token)
