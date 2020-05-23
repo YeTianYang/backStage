@@ -1,4 +1,4 @@
-import { Button, Form, FormItem, Input, Container, Aside, Main, Header, Message } from 'element-ui'
+import { Button, Form, FormItem, Input, Container, Aside, Main, Header, Message ,MessageBox} from 'element-ui'
 
 export default {
   install (Vue) {
@@ -10,6 +10,7 @@ export default {
       Vue.use(Aside),
       Vue.use(Main),
       Vue.use(Header),
-      Vue.prototype.$message = Message
+      Vue.prototype.$message = Message,
+      Vue.prototype.$messageBox = MessageBox
   }
 }

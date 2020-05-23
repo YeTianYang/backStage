@@ -10,6 +10,8 @@ import element from './element/index'
 // //导入message模块
 // import { Message } from 'element-ui'
 // Vue.prototype.$message = Message;
+// import { MessageBox } from 'element-ui'
+// Vue.prototype.$messageBox = MessageBox;
 
 Vue.use(css)
 //使用element-ui 
