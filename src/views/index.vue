@@ -17,12 +17,16 @@
             unique-opened
             router
           >
-            <el-submenu v-for="(item,index) in menuList" :key="index" :index= "''+index">
+            <el-submenu v-for="(item,index) in menuList" :key="index" :index="''+index">
               <template slot="title">
                 <i class="el-icon-location"></i>
                 <span slot="title">{{item.authName}}</span>
               </template>
-              <el-menu-item :index="menuItem.path" v-for="(menuItem,index) in item.children" :key="index">
+              <el-menu-item
+                :index="menuItem.path"
+                v-for="(menuItem,index) in item.children"
+                :key="index"
+              >
                 <i class="el-icon-menu"></i>
                 <span slot="title">{{menuItem.authName}}</span>
               </el-menu-item>
@@ -30,8 +34,7 @@
           </el-menu>
         </el-aside>
         <el-main class="my-main">
-          <router-view>
-          </router-view>
+          <router-view></router-view>
         </el-main>
       </el-container>
     </el-container>
@@ -46,9 +49,9 @@ import { menus } from "../api/http";
 export default {
   name: "index",
   data() {
-    return{
+    return {
       menuList: []
-    }
+    };
   },
   methods: {
     //登出的方法
@@ -83,7 +86,7 @@ export default {
   created() {
     menus().then(res => {
       // console.log(res);
-      this.menuList = res.data.data
+      this.menuList = res.data.data;
     });
   }
 };

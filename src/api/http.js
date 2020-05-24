@@ -1,27 +1,42 @@
 //导入axios
-import axios from 'axios'
+import axios from "axios";
 //设置基地址
 const http = axios.create({
-  baseURL: 'http://localhost:8888/api/private/v1/'
-})
+  baseURL: "http://localhost:8888/api/private/v1/",
+});
 //将axios 暴露出去
 // export default http
 
 //专门封装一个登录请求
 const login = (username, password) => {
-  return http.post('login', {
+  return http.post("login", {
     username,
-    password
-  })
-}
+    password,
+  });
+};
 
+//获取左边侧栏的请求
 //发送请求时 不会自动加上token,需要手动添加
-const menus = ()=>{
-  return http.get('menus',{
+const menus = () => {
+  return http.get("menus", {
+    headers: {
+      Authorization: window.localStorage.getItem("token"),
+    },
+  });
+};
+
+//获取用户列表的请求
+const users = ({ query, pagenum, pagesize }) => {
+  return http.get("users", {
+    params: {
+      query,
+      pagenum,
+      pagesize,
+    },
     headers:{
       Authorization : window.localStorage.getItem('token')
     }
-  })
-}
+  });
+};
 
-export { login,menus }
+export { login, menus,users };
