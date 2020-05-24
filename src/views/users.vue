@@ -38,12 +38,15 @@
       </el-table-column>
     </el-table>
 
+    <!-- 分页部分 -->
     <div class="block">
       <el-pagination
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :page-sizes="[5, 10, 15, 20]"
+        :page-size="5"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400"
+        :total="total"
       ></el-pagination>
     </div>
   </div>
@@ -63,17 +66,38 @@ export default {
         pagesize: 5
       },
       tableData: [],
-      //表头
-      formHeader: []
+      //总条数
+      total: null
     };
   },
+  methods: {
+    //封装获取用户列表的方法
+    getUsers() {
+      //执行用户列表的请求
+      users(this.searchParams).then(res => {
+        console.log(res);
+        // 将获取的值赋值给tableData
+        this.tableData = res.data.data.users;
+        this.total = res.data.data.total;
+      });
+    },
+
+    //每页条数的改变事件
+    handleSizeChange(page) {
+      this.searchParams.pagesize = page;
+      //从新发送请求获得用户列表
+      this.getUsers()
+    },
+
+    //当前页码数
+    handleCurrentChange(page){
+      this.searchParams.pagenum = page
+      //再次执行获取用户列表的方法
+      this.getUsers()
+    },
+  },
   created() {
-    //执行用户列表的请求
-    users(this.searchParams).then(res => {
-      console.log(res);
-      // 将获取的值赋值给tableData
-      this.tableData = res.data.data.users;
-    });
+    this.getUsers()
   }
 };
 </script>
