@@ -14,4 +14,14 @@ const login = (username, password) => {
     password
   })
 }
-export { login }
+
+//发送请求时 不会自动加上token,需要手动添加
+const menus = ()=>{
+  return http.get('menus',{
+    headers:{
+      Authorization : window.localStorage.getItem('token')
+    }
+  })
+}
+
+export { login,menus }
