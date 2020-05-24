@@ -1,7 +1,29 @@
-import { Button, Form, FormItem, Input, Container, Aside, Main, Header, Message ,MessageBox,Menu,MenuItem,Submenu,MenuItemGroup} from 'element-ui'
+import {
+  Button,
+  Form,
+  FormItem,
+  Input,
+  Container,
+  Aside,
+  Main,
+  Header,
+  Message,
+  MessageBox,
+  Menu,
+  MenuItem,
+  Submenu,
+  MenuItemGroup,
+  Breadcrumb,
+  BreadcrumbItem,
+  Row,
+  Col,
+  Table,
+  TableColumn,
+  Pagination,
+} from "element-ui";
 
 export default {
-  install (Vue) {
+  install(Vue) {
     Vue.use(Button),
       Vue.use(Form),
       Vue.use(FormItem),
@@ -14,7 +36,14 @@ export default {
       Vue.use(MenuItem),
       Vue.use(Submenu),
       Vue.use(MenuItemGroup),
-      Vue.prototype.$message = Message,
-      Vue.prototype.$messageBox = MessageBox
-  }
-}
+      Vue.use(Breadcrumb),
+      Vue.use(BreadcrumbItem),
+      Vue.use(Row),
+      Vue.use(Col),
+      Vue.use(Table),
+      Vue.use(TableColumn),
+      Vue.use(Pagination),
+      (Vue.prototype.$message = Message),
+      (Vue.prototype.$messageBox = MessageBox);
+  },
+};

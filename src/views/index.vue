@@ -114,6 +114,7 @@ export default {
     }
     .my-main {
       background-color: #e9eef3;
+      padding: 0 20px;
     }
   }
 }

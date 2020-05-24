@@ -2,9 +2,9 @@ import Vue from "vue";
 //导入路由
 import VueRouter from "vue-router";
 //导入组件
-import Login from "../components/login.vue";
-import Index from "../components/index.vue";
-import Users from "../components/users.vue";
+import Login from "../views/login.vue";
+import Index from "../views/index.vue";
+import Users from "../views/users.vue";
 //使用路由
 Vue.use(VueRouter);
 
