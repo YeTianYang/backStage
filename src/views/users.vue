@@ -9,12 +9,12 @@
     </el-breadcrumb>
     <!-- 输入框搜索栏 -->
     <el-row>
-      <el-col :span="8">
-        <el-input placeholder="请输入内容" class="input-with-select">
+      <el-col :span="6">
+        <el-input placeholder="请输入内容" class="input-with-select" v-model.trim="searchParams.query" @input="getUsers">
           <el-button slot="append" icon="el-icon-search"></el-button>
         </el-input>
       </el-col>
-      <el-col :span="16">
+      <el-col :span="18">
         <el-button type="success" plain>添加用户</el-button>
       </el-col>
     </el-row>
@@ -59,6 +59,8 @@ export default {
   name: "users",
   data() {
     return {
+      //输入框输入的关键字
+      searchWords:'',
       //查询用户列表的参数
       searchParams: {
         query: "",
@@ -81,6 +83,16 @@ export default {
         this.total = res.data.data.total;
       });
     },
+
+    // //搜索关键字的方法
+    // handleSearch(){
+    //   // 用原生方法keyup.enter 时需后面接上native
+    //   //获取输入框输入的值赋值给query
+    //   this.searchParams.query = this.searchWords
+    //   this.searchParams.pagenum = 1;
+    //   //重新调用获取列表的方法获取数据再渲染
+    //   this.getUsers()
+    // },
 
     //每页条数的改变事件
     handleSizeChange(page) {
