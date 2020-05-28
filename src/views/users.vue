@@ -11,7 +11,7 @@
     <el-row>
       <el-col :span="6">
         <el-input placeholder="请输入内容" class="input-with-select" v-model.trim="searchParams.query" @input="getUsers">
-          <el-button slot="append" icon="el-icon-search"></el-button>
+          <el-button slot="append" icon="el-icon-search" @click="getUsers"></el-button>
         </el-input>
       </el-col>
       <el-col :span="18">
@@ -75,9 +75,13 @@ export default {
   methods: {
     //封装获取用户列表的方法
     getUsers() {
+      //如果query值不为空 表示要查数据 将pagenum的值改为1
+      if(this.searchParams.query !=''){
+        this.searchParams.pagenum = 1
+      }
       //执行用户列表的请求
       users(this.searchParams).then(res => {
-        console.log(res);
+        // console.log(res);
         // 将获取的值赋值给tableData
         this.tableData = res.data.data.users;
         this.total = res.data.data.total;
