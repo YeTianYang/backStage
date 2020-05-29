@@ -13,7 +13,7 @@ http.interceptors.request.use(
     //返回的config是一个对象 里面包含了请求头等信息
     //在config里添加token信息
     config.headers.Authorization = window.localStorage.getItem("token");
-    console.log(config)
+    // console.log(config)
     return config;
   },
   (error) => {
@@ -42,8 +42,18 @@ const users = ({ query, pagenum, pagesize }) => {
       query,
       pagenum,
       pagesize,
-    }
+    },
   });
 };
 
-export { login, menus, users };
+//新增用户的方法
+const addUser = ({ username, password, email, mobile }) => {
+  return http.post("users", {
+    username,
+    password,
+    email,
+    mobile,
+  });
+};
+
+export { login, menus, users, addUser };

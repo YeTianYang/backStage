@@ -10,12 +10,17 @@
     <!-- 输入框搜索栏 -->
     <el-row>
       <el-col :span="6">
-        <el-input placeholder="请输入内容" class="input-with-select" v-model.trim="searchParams.query" @input="getUsers">
+        <el-input
+          placeholder="请输入内容"
+          class="input-with-select"
+          v-model.trim="searchParams.query"
+          @input="getUsers"
+        >
           <el-button slot="append" icon="el-icon-search" @click="getUsers"></el-button>
         </el-input>
       </el-col>
       <el-col :span="18">
-        <el-button type="success" plain>添加用户</el-button>
+        <el-button type="success" plain @click="dialogFormVisible=true">添加用户</el-button>
       </el-col>
     </el-row>
     <!-- 用户列表 -->
@@ -49,18 +54,40 @@
         :total="total"
       ></el-pagination>
     </div>
+
+    <!-- 对话框页面 -->
+    <el-dialog title="收货地址" :visible.sync="dialogFormVisible">
+      <el-form :model="form" :rules="rules" ref="ruleForm">
+        <el-form-item label="用户名" :label-width="formLabelWidth" prop="username">
+          <el-input v-model="form.username" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" :label-width="formLabelWidth" prop="password">
+          <el-input v-model="form.password" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" :label-width="formLabelWidth" prop="mail">
+          <el-input v-model="form.mail" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号码" :label-width="formLabelWidth" prop="mobile">
+          <el-input v-model="form.mobile" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 //导入请求用户列表的方法
-import { users } from "../api/http";
+import { users, addUser } from "../api/http";
 export default {
   name: "users",
   data() {
     return {
       //输入框输入的关键字
-      searchWords:'',
+      searchWords: "",
       //查询用户列表的参数
       searchParams: {
         query: "",
@@ -69,15 +96,66 @@ export default {
       },
       tableData: [],
       //总条数
-      total: null
+      total: null,
+
+      //对话框属性
+      // 表格宽度
+      formLabelWidth: "100px",
+      // 对话框是否显示
+      dialogFormVisible: false,
+      //表单属性
+      form: {
+        username: "",
+        password: "",
+        mail: "",
+        mobile: ""
+      },
+      //验证规则
+      rules: {
+        username: [
+          { required: true, message: "请输入用户名", trigger: "blur" },
+          {
+            min: 6,
+            max: 11,
+            message: "长度在 6 到 11 个字符",
+            trigger: ["blur", "change"]
+          }
+        ],
+        password: [
+          { required: true, message: "请输入密码", trigger: "blur" },
+          {
+            min: 6,
+            max: 8,
+            message: "长度在 6 到 8 个字符",
+            trigger: ["blur", "change"]
+          }
+        ],
+        mail: [
+          { required: true, message: "请输入邮箱", trigger: "blur" },
+          {
+            type: "email",
+            message: "请输入正确的邮箱格式",
+            trigger: ["blur", "change"]
+          }
+        ],
+        mobile: [
+          { required: true, message: "请输入手机号码", trigger: "blur" },
+          {
+            min: 11,
+            max: 11,
+            message: "请输入11位手机",
+            trigger: ["blur", "change"]
+          }
+        ]
+      }
     };
   },
   methods: {
     //封装获取用户列表的方法
     getUsers() {
       //如果query值不为空 表示要查数据 将pagenum的值改为1
-      if(this.searchParams.query !=''){
-        this.searchParams.pagenum = 1
+      if (this.searchParams.query != "") {
+        this.searchParams.pagenum = 1;
       }
       //执行用户列表的请求
       users(this.searchParams).then(res => {
@@ -102,18 +180,41 @@ export default {
     handleSizeChange(page) {
       this.searchParams.pagesize = page;
       //从新发送请求获得用户列表
-      this.getUsers()
+      this.getUsers();
     },
 
     //当前页码数
-    handleCurrentChange(page){
-      this.searchParams.pagenum = page
+    handleCurrentChange(page) {
+      this.searchParams.pagenum = page;
       //再次执行获取用户列表的方法
-      this.getUsers()
+      this.getUsers();
     },
+    // 确定添加后会验证所有规则
+    submitForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          //对话框隐藏
+          this.dialogFormVisible = false;
+
+          addUser(this.form).then(res => {
+            console.log(res);
+            if(res.data.meta.status==201){
+               //提示添加成功
+              this.$message.success("添加成功");
+              //刷新页面
+              this.getUsers()
+            }else{
+              this.$message.error(res.data.meta.msg)
+            }
+          });
+          //清空表格数据
+          this.$refs[formName].resetFields();
+        }
+      });
+    }
   },
   created() {
-    this.getUsers()
+    this.getUsers();
   }
 };
 </script>

@@ -21,6 +21,7 @@ import {
   TableColumn,
   Pagination,
   Switch,
+  Dialog
 } from "element-ui";
 
 export default {
@@ -45,6 +46,7 @@ export default {
       Vue.use(TableColumn),
       Vue.use(Pagination),
       Vue.use(Switch),
+      Vue.use(Dialog),
       (Vue.prototype.$message = Message),
       (Vue.prototype.$messageBox = MessageBox);
   },
