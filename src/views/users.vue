@@ -33,7 +33,7 @@
         <!-- table表格中要想使用组件，得使用自定义模板 -->
         <template slot-scope="scope">
           <!-- {{scope.row}} -->
-          <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+          <el-switch @change="changeState(scope.row)" v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
         </template>
       </el-table-column>
       <el-table-column prop="date" label="操作">
@@ -81,7 +81,7 @@
 
 <script>
 //导入请求用户列表的方法
-import { users, addUser } from "../api/http";
+import { users, addUser ,changeUserState} from "../api/http";
 export default {
   name: "users",
   data() {
@@ -166,6 +166,19 @@ export default {
       });
     },
 
+    //添加用户状态改变的方法
+    changeState(val){
+      // val包含了点击的那一整行的信息
+      // console.log(val)
+      changeUserState(val.id,val.mg_state).then(res=>{
+        console.log(res)
+        if(res.data.meta.status == 200){
+          this.$message.success(res.data.meta.msg)
+        }else{
+          this.$message.error('修改状态失败，请联系管理员')
+        }
+      })
+    },
     // //搜索关键字的方法
     // handleSearch(){
     //   // 用原生方法keyup.enter 时需后面接上native

@@ -56,4 +56,9 @@ const addUser = ({ username, password, email, mobile }) => {
   });
 };
 
-export { login, menus, users, addUser };
+//修改用户状态的方法
+const changeUserState = (uid,type)=>{
+  return http.put(`users/${uid}/state/${type}`)
+}
+
+export { login, menus, users, addUser,changeUserState };
