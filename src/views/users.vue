@@ -51,7 +51,7 @@
             plain
             @click="showEdit(scope.row)"
           ></el-button>
-          <el-button type="danger" icon="el-icon-delete" size="mini" plain></el-button>
+          <el-button type="danger" icon="el-icon-delete" size="mini" plain @click="showDelete(scope.row)"></el-button>
           <el-button type="warning" icon="el-icon-check" size="mini" plain></el-button>
         </template>
       </el-table-column>
@@ -109,12 +109,24 @@
         <el-button type="primary" @click="doEdit">确 定</el-button>
       </div>
     </el-dialog>
+
+    <!-- 删除用户的对话框 -->
+    <el-dialog title="提示" :visible.sync="dialogDelete" width="30%">
+      <div class="warning">
+        <i class="el-icon-warning" color="orange"></i>
+        <span>确定要删除该用户吗?</span>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogDelete = false">取 消</el-button>
+        <el-button type="primary" @click="doDelete">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 //导入请求用户列表的方法
-import { users, addUser, changeUserState ,editUser} from "../api/http";
+import { users, addUser, changeUserState, editUser,deleteUser } from "../api/http";
 export default {
   name: "users",
   data() {
@@ -126,6 +138,10 @@ export default {
       },
       //控制修改用户信息对话框的显示
       editFormVisible: false,
+      //控制删除对话框的显示
+      dialogDelete:false,
+      //删除用户的id
+      deleteId:null,
       //输入框输入的关键字
       searchWords: "",
       //查询用户列表的参数
@@ -155,9 +171,9 @@ export default {
         username: [
           { required: true, message: "请输入用户名", trigger: "blur" },
           {
-            min: 6,
+            min: 5,
             max: 11,
-            message: "长度在 6 到 11 个字符",
+            message: "长度在 5 到 11 个字符",
             trigger: ["blur", "change"]
           }
         ],
@@ -206,24 +222,45 @@ export default {
       });
     },
 
+    //弹出删除用户对话框
+    showDelete(val){
+      this.dialogDelete = true;
+      // console.log(val)
+      this.deleteId = val.id
+    },
+    //执行删除信息
+    doDelete(){
+      // alert(123)
+      deleteUser(this.deleteId).then(res=>{
+        // console.log(res)
+        if(res.data.meta.status == 200){
+          this.$message.success(res.data.meta.msg)
+          this.dialogDelete = false;
+          this.getUsers()
+        }else{
+          this.$message.error('删除失败,请联系管理员')
+        }
+      })
+    },
+
     //弹出修改用户信息对话框
     showEdit(val) {
       this.editFormVisible = true;
       // this.editForm = val;
       //使用解构语法，可以使引用对象
       // 将获取的点击行的信息显示在输入框中
-      this.editForm = {...val}
+      this.editForm = { ...val };
     },
     // 修改用户信息
-    doEdit(){
-      editUser(this.editForm).then(res=>{
+    doEdit() {
+      editUser(this.editForm).then(res => {
         // console.log(res)
-        this.form = {...res.data.data} 
+        this.form = { ...res.data.data };
         // this.form.mobile = res.data.data.mobile
-        this.editFormVisible = false
-        this.$message.success('修改成功')
-        this.getUsers()
-      })
+        this.editFormVisible = false;
+        this.$message.success("修改成功");
+        this.getUsers();
+      });
     },
     //添加用户状态改变的方法
     changeState(val) {
@@ -296,5 +333,17 @@ export default {
   height: 45px;
   line-height: 45px;
   background-color: #d3dce6;
+}
+.warning {
+  height: 32px;
+  line-height: 32px;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+
+  .el-icon-warning{
+    color: #e6a23c;
+    margin-right: 5px;
+  }
 }
 </style>

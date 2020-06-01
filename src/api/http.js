@@ -69,4 +69,9 @@ const editUser = ({id,email,mobile})=>{
   })
 }
 
-export { login, menus, users, addUser,changeUserState ,editUser};
+//删除用户的方法
+const deleteUser = (id)=>{
+  return http.delete(`users/${id}`)
+}
+
+export { login, menus, users, addUser,changeUserState ,editUser,deleteUser};
