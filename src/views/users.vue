@@ -33,13 +33,27 @@
         <!-- table表格中要想使用组件，得使用自定义模板 -->
         <template slot-scope="scope">
           <!-- {{scope.row}} -->
-          <el-switch @change="changeState(scope.row)" v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+          <el-switch
+            @change="changeState(scope.row)"
+            v-model="scope.row.mg_state"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+          ></el-switch>
         </template>
       </el-table-column>
       <el-table-column prop="date" label="操作">
-        <el-button type="primary" icon="el-icon-edit" size="mini" plain></el-button>
-        <el-button type="danger" icon="el-icon-delete" size="mini" plain></el-button>
-        <el-button type="warning" icon="el-icon-check" size="mini" plain></el-button>
+        <template slot-scope="scope">
+          <!-- {{scope.row}} -->
+          <el-button
+            type="primary"
+            icon="el-icon-edit"
+            size="mini"
+            plain
+            @click="showEdit(scope.row)"
+          ></el-button>
+          <el-button type="danger" icon="el-icon-delete" size="mini" plain></el-button>
+          <el-button type="warning" icon="el-icon-check" size="mini" plain></el-button>
+        </template>
       </el-table-column>
     </el-table>
 
@@ -76,16 +90,42 @@
         <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
       </div>
     </el-dialog>
+
+    <!-- 修改用户信息 -->
+    <el-dialog title="收货地址" :visible.sync="editFormVisible">
+      <el-form :model="editForm">
+        <el-form-item label="用户名" :label-width="formLabelWidth" prop="username">
+          <el-input v-model="editForm.username" autocomplete="off" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" :label-width="formLabelWidth" prop="mail">
+          <el-input v-model="editForm.email" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号码" :label-width="formLabelWidth" prop="mobile">
+          <el-input v-model="editForm.mobile" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="editFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="doEdit">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 //导入请求用户列表的方法
-import { users, addUser ,changeUserState} from "../api/http";
+import { users, addUser, changeUserState ,editUser} from "../api/http";
 export default {
   name: "users",
   data() {
     return {
+      editForm: {
+        username: "",
+        email: "",
+        mobile: ""
+      },
+      //控制修改用户信息对话框的显示
+      editFormVisible: false,
       //输入框输入的关键字
       searchWords: "",
       //查询用户列表的参数
@@ -166,18 +206,37 @@ export default {
       });
     },
 
+    //弹出修改用户信息对话框
+    showEdit(val) {
+      this.editFormVisible = true;
+      // this.editForm = val;
+      //使用解构语法，可以使引用对象
+      // 将获取的点击行的信息显示在输入框中
+      this.editForm = {...val}
+    },
+    // 修改用户信息
+    doEdit(){
+      editUser(this.editForm).then(res=>{
+        // console.log(res)
+        this.form = {...res.data.data} 
+        // this.form.mobile = res.data.data.mobile
+        this.editFormVisible = false
+        this.$message.success('修改成功')
+        this.getUsers()
+      })
+    },
     //添加用户状态改变的方法
-    changeState(val){
+    changeState(val) {
       // val包含了点击的那一整行的信息
       // console.log(val)
-      changeUserState(val.id,val.mg_state).then(res=>{
-        console.log(res)
-        if(res.data.meta.status == 200){
-          this.$message.success(res.data.meta.msg)
-        }else{
-          this.$message.error('修改状态失败，请联系管理员')
+      changeUserState(val.id, val.mg_state).then(res => {
+        console.log(res);
+        if (res.data.meta.status == 200) {
+          this.$message.success(res.data.meta.msg);
+        } else {
+          this.$message.error("修改状态失败，请联系管理员");
         }
-      })
+      });
     },
     // //搜索关键字的方法
     // handleSearch(){
@@ -211,13 +270,13 @@ export default {
 
           addUser(this.form).then(res => {
             console.log(res);
-            if(res.data.meta.status==201){
-               //提示添加成功
+            if (res.data.meta.status == 201) {
+              //提示添加成功
               this.$message.success("添加成功");
               //刷新页面
-              this.getUsers()
-            }else{
-              this.$message.error(res.data.meta.msg)
+              this.getUsers();
+            } else {
+              this.$message.error(res.data.meta.msg);
             }
           });
           //清空表格数据

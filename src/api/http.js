@@ -61,4 +61,12 @@ const changeUserState = (uid,type)=>{
   return http.put(`users/${uid}/state/${type}`)
 }
 
-export { login, menus, users, addUser,changeUserState };
+//修改用户的方法
+const editUser = ({id,email,mobile})=>{
+  return http.put(`users/${id}`,{
+    email,
+    mobile,
+  })
+}
+
+export { login, menus, users, addUser,changeUserState ,editUser};
