@@ -1,12 +1,7 @@
 <template>
   <div>
-    <!-- 面包屑 -->
-    <el-breadcrumb separator-class="el-icon-arrow-right" class="my-bread">
-      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>活动管理</el-breadcrumb-item>
-      <el-breadcrumb-item>活动列表</el-breadcrumb-item>
-      <el-breadcrumb-item>活动详情</el-breadcrumb-item>
-    </el-breadcrumb>
+    <!-- 自定义全局组件:面包屑 -->
+    <bread first="用户管理" second="用户列表"></bread>
     <!-- 输入框搜索栏 -->
     <el-row>
       <el-col :span="6">
@@ -281,13 +276,14 @@ export default {
 
     //弹出分配角色对话框
     showRole(row) {
-      console.log(row)
+      // console.log(row)
       this.dialogRole = true;
       this.roleForm.name = row.username;
       //有问题,传参的rid 是数字,如果下拉框不改变,传的值是文字,所以要循环判断之后再赋值
       // this.roleForm.rid = row.role_name;
       let rid = 0;
       for(let i =0 ;i<this.roleList.length;i++){
+        // 当循环角色列表中的角色名 与点击行的角色名相同时 取出id 赋值
         if(this.roleList[i].roleName == row.role_name){
           rid = this.roleList[i].id
           break;

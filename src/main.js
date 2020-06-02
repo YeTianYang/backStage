@@ -20,6 +20,10 @@ Vue.use(element)
 //导入封装的router
 import router from './router/router'
 
+//注册全局组件:面包屑
+import bread from './components/bread.vue'
+Vue.component('bread',bread)
+
 Vue.config.productionTip = false
 
 new Vue({

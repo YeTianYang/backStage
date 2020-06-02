@@ -5,6 +5,7 @@ import VueRouter from "vue-router";
 import Login from "../views/login.vue";
 import Index from "../views/index.vue";
 import Users from "../views/users.vue";
+import PermissionList from '../views/permissionList.vue'
 //使用路由
 Vue.use(VueRouter);
 
@@ -16,6 +17,10 @@ const routes = [
       {
         path: "/users",
         component: Users,
+      },
+      {
+        path: "/rights",
+        component: PermissionList,
       },
     ],
   },
