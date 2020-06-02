@@ -179,9 +179,9 @@ export default {
       roleForm: {
         name: "",
         //角色id
-        rid: 1,
+        rid: 0,
         //用户id
-        id:1,
+        id:0,
       },
       //控制分配角色对话框的显示
       dialogRole: false,
@@ -281,10 +281,19 @@ export default {
 
     //弹出分配角色对话框
     showRole(row) {
-      // console.log(row)
+      console.log(row)
       this.dialogRole = true;
       this.roleForm.name = row.username;
-      this.roleForm.rid = row.role_name;
+      //有问题,传参的rid 是数字,如果下拉框不改变,传的值是文字,所以要循环判断之后再赋值
+      // this.roleForm.rid = row.role_name;
+      let rid = 0;
+      for(let i =0 ;i<this.roleList.length;i++){
+        if(this.roleList[i].roleName == row.role_name){
+          rid = this.roleList[i].id
+          break;
+        }
+      }
+      this.roleForm.rid = rid
       this.roleForm.id = row.id;
     },
     //分配角色执行
