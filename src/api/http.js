@@ -74,4 +74,6 @@ const deleteUser = (id)=>{
   return http.delete(`users/${id}`)
 }
 
+//分配角色
+
 export { login, menus, users, addUser,changeUserState ,editUser,deleteUser};

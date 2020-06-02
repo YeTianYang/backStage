@@ -51,8 +51,20 @@
             plain
             @click="showEdit(scope.row)"
           ></el-button>
-          <el-button type="danger" icon="el-icon-delete" size="mini" plain @click="showDelete(scope.row)"></el-button>
-          <el-button type="warning" icon="el-icon-check" size="mini" plain></el-button>
+          <el-button
+            type="danger"
+            icon="el-icon-delete"
+            size="mini"
+            plain
+            @click="showDelete(scope.row)"
+          ></el-button>
+          <el-button
+            type="warning"
+            icon="el-icon-check"
+            size="mini"
+            plain
+            @click="showRole(scope.row)"
+          ></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -121,27 +133,64 @@
         <el-button type="primary" @click="doDelete">确 定</el-button>
       </span>
     </el-dialog>
+
+    <!-- 分配角色   -->
+    <el-dialog title="分配角色" :visible.sync="dialogRole" width="30%">
+      <el-form :model="roleForm">
+        <el-form-item label="用户名" :label-width="formLabelWidth">
+          <el-input v-model="roleForm.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="请选择角色" :label-width="formLabelWidth">
+          <el-select v-model="roleForm.rid" placeholder="请选择角色">
+            <el-option v-for="(item,index) in roleList" :key="index" :label="item.roleName" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogRole = false">取 消</el-button>
+        <el-button type="primary" @click="userChangeRole">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 //导入请求用户列表的方法
-import { users, addUser, changeUserState, editUser,deleteUser } from "../api/http";
+import {
+  users,
+  addUser,
+  changeUserState,
+  editUser,
+  deleteUser
+} from "../api/http";
+import { roles ,userRole} from "../api/roles.js";
 export default {
   name: "users",
   data() {
     return {
+      //编辑用户信息的列表
       editForm: {
         username: "",
         email: "",
         mobile: ""
       },
+      //角色列表
+      roleList:[],
+      roleForm: {
+        name: "",
+        //角色id
+        rid: 1,
+        //用户id
+        id:1,
+      },
+      //控制分配角色对话框的显示
+      dialogRole: false,
       //控制修改用户信息对话框的显示
       editFormVisible: false,
       //控制删除对话框的显示
-      dialogDelete:false,
+      dialogDelete: false,
       //删除用户的id
-      deleteId:null,
+      deleteId: null,
       //输入框输入的关键字
       searchWords: "",
       //查询用户列表的参数
@@ -221,26 +270,55 @@ export default {
         this.total = res.data.data.total;
       });
     },
-
-    //弹出删除用户对话框
-    showDelete(val){
-      this.dialogDelete = true;
-      // console.log(val)
-      this.deleteId = val.id
-    },
-    //执行删除信息
-    doDelete(){
-      // alert(123)
-      deleteUser(this.deleteId).then(res=>{
+    //获取角色列表
+    getRoles() {
+      roles().then(res => {
         // console.log(res)
+        this.roleList = res.data.data;
+        // console.log(this.roleList);
+      });
+    },
+
+    //弹出分配角色对话框
+    showRole(row) {
+      // console.log(row)
+      this.dialogRole = true;
+      this.roleForm.name = row.username;
+      this.roleForm.rid = row.role_name;
+      this.roleForm.id = row.id;
+    },
+    //分配角色执行
+    userChangeRole(){
+      userRole(this.roleForm).then(res=>{
+        console.log(res)
         if(res.data.meta.status == 200){
-          this.$message.success(res.data.meta.msg)
-          this.dialogDelete = false;
-          this.getUsers()
+          this.dialogRole = false;
+          this.$message.success(res.data.meta.msg);
+          this.getUsers();
         }else{
-          this.$message.error('删除失败,请联系管理员')
+          this.$message.error("设置失败")
         }
       })
+    },
+    //弹出删除用户对话框
+    showDelete(val) {
+      this.dialogDelete = true;
+      // console.log(val)
+      this.deleteId = val.id;
+    },
+    //执行删除信息
+    doDelete() {
+      // alert(123)
+      deleteUser(this.deleteId).then(res => {
+        // console.log(res)
+        if (res.data.meta.status == 200) {
+          this.$message.success(res.data.meta.msg);
+          this.dialogDelete = false;
+          this.getUsers();
+        } else {
+          this.$message.error("删除失败,请联系管理员");
+        }
+      });
     },
 
     //弹出修改用户信息对话框
@@ -323,7 +401,10 @@ export default {
     }
   },
   created() {
+    //获取用户列表
     this.getUsers();
+    //获取角色列表
+    this.getRoles();
   }
 };
 </script>
@@ -341,7 +422,7 @@ export default {
   display: flex;
   align-items: center;
 
-  .el-icon-warning{
+  .el-icon-warning {
     color: #e6a23c;
     margin-right: 5px;
   }
